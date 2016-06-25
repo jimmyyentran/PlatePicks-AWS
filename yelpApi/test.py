@@ -4,9 +4,9 @@ import pprint
 #Test Parameters
 params = {
         "term": "asian",
-       "food_per_business": 3,
+       "food_per_business": 1,
        "ll": "33.9533, -117.3962",
-       "limit": 3,
+       "limit": 20,
        "radius_filter": 40000,
        "category_filter": "vietnamese,filipino",
        "sort": 1,
