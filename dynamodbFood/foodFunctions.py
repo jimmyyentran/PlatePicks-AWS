@@ -3,7 +3,6 @@ from yelpApi import Yelp_API
 import boto3
 import json
 import decimal
-import boto3
 
 # Helper class to convert a DynamoDB item to JSON.
 class DecimalEncoder(json.JSONEncoder):

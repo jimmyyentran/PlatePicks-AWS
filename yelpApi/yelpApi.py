@@ -6,6 +6,7 @@ from yelp.oauth1_authenticator import Oauth1Authenticator
 from yelp.config import SEARCH_PATH
 from yelp.obj.search_response import SearchResponse
 from crawl import Crawler
+from dynamodb import DB
 import datetime
 
 # This class serves as Yelp API's wrapper
@@ -46,4 +47,10 @@ class Yelp_API(object):
                     longitude=bus.location.coordinate.longitude,
                     category=category_list
                     )
-        return Crawler(dict_of_urls).limit(self.food_per_business)
+
+        if 'query_method' in self.data and self.data['query_method'] == 1:
+            print("DB")
+            return DB(dict_of_urls).query(self.food_per_business)
+        else:
+            print("Yelp")
+            return Crawler(dict_of_urls).query(self.food_per_business)

@@ -4,6 +4,7 @@ from urlparse import urljoin
 from nameParser import NameParser
 import random
 import grequests
+from dynamodb import DB
 #  import unirest
 #  from requests_futures.sessions import FuturesSession
 
@@ -19,13 +20,14 @@ class Crawler(object):
 
     #Take in a list of url
     #  @profile
-    def limit(self,limit):
+    def query(self,limit):
         self.limit = limit
         async_list = []
+
         for key in self.urls:
             action_item = grequests.get(key, hooks = {'response' :
-                self.extract_food_names
-                })
+                    self.extract_food_names
+            })
             async_list.append(action_item)
         grequests.map(async_list, exception_handler=self.exception_handler)
         random.shuffle(self.information)
@@ -36,6 +38,11 @@ class Crawler(object):
         print "Failed %s" % (request)
         print(exception)
 
+    def query_dynamodb(self, response, **kwargs):
+        url = response.url
+        foods = self.db.get_item()
+        for food in foods:
+            print(food)
 
     #  @profile
     def extract_food_names(self, response, **kwargs):
