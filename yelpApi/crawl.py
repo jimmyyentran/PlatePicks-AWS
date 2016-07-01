@@ -14,6 +14,7 @@ class Crawler(object):
         self.urls = data;
         self.parse = NameParser("unwantedWords.txt")
         self.information = []
+        self.url_to_id_lookup = {}
         #  self.session = FuturesSession()
         #  tornado.httpclient.AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
 
@@ -24,7 +25,9 @@ class Crawler(object):
         async_list = []
 
         for key in self.urls:
-            action_item = grequests.get(key, hooks = {'response' :
+            url = "http://www.yelp.com/biz_photos/"+key+"?tab=food&start=0"
+            self.url_to_id_lookup[url] = key #add url as key
+            action_item = grequests.get(url, hooks = {'response' :
                     self.extract_food_names
             })
             async_list.append(action_item)
@@ -86,6 +89,7 @@ class Crawler(object):
                         if "bphoto" in link['src']:
                             fake = link['alt']
                             fake = fake[fake.find("States.") + 7:]
+
                             # removes majority of the bad comments
                             if " United States" not in fake:
                                 prettified = self.parse.parse_name(fake.rstrip().lstrip()) # strip
@@ -100,21 +104,10 @@ class Crawler(object):
                                     pics.append(link['src'].replace("/258s", "/o"))
                                     pics_id.append(fake)
 
-        # remove the first thing because it automatically catches it and is in a small size
-        #  print(com[0])
-        #  print(pics[0])
-        #  print(pics_id[0])
-        #  com.pop(0)
-        #  pics.pop(0)
-        #  pics_id.pop(0)
-
         # prints the comments, pic_id and the url of the picture
         for pic, coms, pic_id in zip(pics, com, pics_id):
-            #  self.information.append([pic_id, pic, coms])
             to_be_returned = dict(url=pic, food_id=pic_id, name=coms)
-            to_be_returned['location']=self.urls[firstUrl]
-            #  to_be_returned.update(self.urls[firstUrl])
+
+            # use dictionary lookup
+            to_be_returned['location']=self.urls[self.url_to_id_lookup[firstUrl]]
             self.information.append(to_be_returned)
-            #  self.information.append(dict(url=pic, food_id=pic_id,
-                #  name=coms).update(original_info))
-        #  return information

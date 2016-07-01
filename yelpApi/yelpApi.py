@@ -32,12 +32,12 @@ class Yelp_API(object):
         list_to_be_returned = []
         dict_of_urls = {}
         for bus in response.businesses:
-            url = "http://www.yelp.com/biz_photos/"+bus.id+"?tab=food&start=0"
+            #  url = "http://www.yelp.com/biz_photos/"+bus.id+"?tab=food&start=0"
             category_list = []
             for category in bus.categories:
                 category_list.append(category.name)
 
-            dict_of_urls[url]= dict(address=bus.location.address, 
+            dict_of_urls[bus.id]= dict(address=bus.location.address, 
                     city=bus.location.city,
                     state=bus.location.state_code,
                     postal_code=bus.location.postal_code,
