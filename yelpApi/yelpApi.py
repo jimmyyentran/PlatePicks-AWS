@@ -1,5 +1,6 @@
 import io
 import json
+import random
 from pprint import pprint
 from yelp.client import Client
 from yelp.oauth1_authenticator import Oauth1Authenticator
@@ -50,7 +51,10 @@ class Yelp_API(object):
 
         if 'query_method' in self.data and self.data['query_method'] == 1:
             print("DB")
-            return DB(dict_of_urls).query(self.food_per_business)
+            food_list = DB(dict_of_urls).query(self.food_per_business)
         else:
             print("Yelp")
-            return Crawler(dict_of_urls).query(self.food_per_business)
+            food_list = Crawler(dict_of_urls).query(self.food_per_business)
+
+        random.shuffle(food_list)
+        return food_list

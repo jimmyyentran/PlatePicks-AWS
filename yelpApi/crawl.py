@@ -2,7 +2,6 @@
 from bs4 import BeautifulSoup
 from urlparse import urljoin
 from nameParser import NameParser
-import random
 import grequests
 from dynamodb import DB
 #  import unirest
@@ -30,7 +29,6 @@ class Crawler(object):
             })
             async_list.append(action_item)
         grequests.map(async_list, exception_handler=self.exception_handler)
-        random.shuffle(self.information)
         return self.information
 
     # allow grequests to output errors
