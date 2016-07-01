@@ -13,7 +13,7 @@ import datetime
 class Yelp_API(object):
     def __init__(self, data):
         #authorization
-        with io.open('config_secret.json') as cred:
+        with io.open('config_secret2.json') as cred:
             creds = json.load(cred)
             auth = Oauth1Authenticator(**creds)
             self.client = Client(auth)

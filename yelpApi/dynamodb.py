@@ -51,12 +51,15 @@ def get_food_from_restaurant(location):
 class DB(object):
     def __init__(self, data):
         #Global so these can be used anywhere
-        global dynamodb
         global table
-        dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-        table = dynamodb.Table('foodtinder-mobilehub-761050320-food')
+        food_db = boto3.Session(
+                aws_access_key_id ='AKIAJLUAEUTHWQCBK5RQ',
+                aws_secret_access_key='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'
+        )
         #  dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-        #  self.table = dynamodb.Table('foodtinder-mobilehub-761050320-food')
+        #  table = dynamodb.Table('foodtinder-mobilehub-761050320-food')
+        dynamodb = food_db.resource('dynamodb', region_name='us-east-1')
+        table = dynamodb.Table('foodtinder-mobilehub-761050320-food')
 
         self.urls = data;
         self.information = []

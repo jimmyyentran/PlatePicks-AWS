@@ -12,7 +12,7 @@ params = {
        "category_filter": "vietnamese,filipino",
        "sort": 1,
        "offset": 0,
-       "query_method": 0
+       "query_method": 1
         }
 response = Yelp_API(params).call_API()
 pprint.pprint(response)

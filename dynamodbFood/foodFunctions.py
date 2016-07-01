@@ -51,12 +51,12 @@ class FoodUpload(object):
             print("Offset: {}".format(offset))
             params = {
                 "term": term,
-                "food_per_business": 5,
-                "ll": "33.9533, -117.3962",
-                "limit": 20,
+                "food_per_business": 10,
+                "ll": "33.7175, -117.8311",
+                #  "limit": 20,
                 "radius_filter": 40000,
                 "category_filter": category,
-                "sort": 0,
+                "sort": 1,
                 "offset": offset
             }
 
@@ -74,4 +74,4 @@ class FoodUpload(object):
 
 
 if __name__ == "__main__":
-    FoodUpload().uploadAllFilter("", "restaurant", 0)
+    FoodUpload().uploadAllFilter("", "asian", 0)
