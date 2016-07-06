@@ -8,7 +8,7 @@ params = {
        "ll": "33.9533, -117.3962",
        "limit": 2,
        "radius_filter": 40000,
-       "category_filter": "vietnamese,filipino",
+       "category_filter": "",
        "sort": 1,
         }
 

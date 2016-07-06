@@ -2,8 +2,8 @@
 from bs4 import BeautifulSoup
 from urlparse import urljoin
 from nameParser import NameParser
+from unidecode import unidecode
 import grequests
-from dynamodb import DB
 #  import unirest
 #  from requests_futures.sessions import FuturesSession
 
@@ -25,7 +25,12 @@ class Crawler(object):
         async_list = []
 
         for key in self.urls:
-            url = "http://www.yelp.com/biz_photos/"+key+"?tab=food&start=0"
+            #  url = ("http://www.yelp.com/biz_photos/"+key+"?tab=food&start=0").encode('ascii','replace')
+            url = ("http://www.yelp.com/biz_photos/"+unidecode(key)+"?tab=food&start=0").encode('ascii','replace')
+            print("@@@@@@@@@@@@@@@@@@@@@@@@@@ " + url)
+            #  for i in range(100):
+                #  print(url)
+                #  print(url.encode('utf-8'))
             self.url_to_id_lookup[url] = key #add url as key
             action_item = grequests.get(url, hooks = {'response' :
                     self.extract_food_names
@@ -36,7 +41,7 @@ class Crawler(object):
 
     # allow grequests to output errors
     def exception_handler(self, request, exception):
-        print "Failed %s" % (request)
+        print "Failed Food: %s" % (request)
         print(exception)
 
     def query_dynamodb(self, response, **kwargs):

@@ -1,13 +1,16 @@
 from __future__ import print_function # Python 2/3 compatibility
 import boto3
 import json
-import decimal
+#  import decimal
+from decimal import Decimal
 from botocore.exceptions import ClientError
 from boto3.dynamodb.conditions import Key
 from multiprocessing import Pool
 from multiprocessing.pool import ThreadPool
 from threading import Thread
 from time import sleep
+from crawl import Crawler
+from foodUpload import FoodUpload
 
 # Helper class to convert a DynamoDB item to JSON.
 class DecimalEncoder(json.JSONEncoder):
@@ -31,23 +34,21 @@ class DB(object):
         #  table = dynamodb.Table('foodtinder-mobilehub-761050320-food')
         dynamodb = food_db.resource('dynamodb', region_name='us-east-1')
         table = dynamodb.Table('foodtinder-mobilehub-761050320-food')
+        self.restaurant_table = dynamodb.Table('foodtinder-mobilehub-761050320-restaurant')
 
         self.urls = data;
         self.information = []
-        self.empty_restaurant = []
+        self.empty_restaurant = {}
 
     def query(self, limit=1):
         self.limit = limit
         list_of_locations = []
-        #  p = Pool()
-        #  p = multiprocessing.pool.ThreadPool()
-        p = ThreadPool(len(self.urls)) #ThreadPool requires number input
+        p = ThreadPool(20) #ThreadPool requires number input
         for key in self.urls:
             list_of_locations.append(self.urls[key])
 
         #  result = p.map_async(get_food_from_restaurant, list_of_locations, callback=self.mycallback)
         p.map(self.get_food_from_restaurant, list_of_locations)
-        #  result.wait()
         p.close()
         p.join()
 
@@ -57,21 +58,54 @@ class DB(object):
                 #  self.information.extend(restaurant)
             #  else:
                 #  list_of_restaurant_with_no_food_items.append()
-        thread = Thread(target = self.print_and_sleep)
+        thread = Thread(target = self.fill_empty_restaurant,
+                args=[self.empty_restaurant])
         thread.start()
-        #  thread.join()
+
+        #  self.fill_empty_restaurant(None)
+
+        #  thread = ThreadPool(1)
+        #  thread.map(self.fill_empty_restaurant, self.empty_restaurant)
+
         return self.information
 
-    def print_and_sleep(self):
-        for restaurant in self.empty_restaurant:
-            print(restaurant)
-            sleep(3)
+    def fill_empty_restaurant(self, item):
+        #  FoodUpload().uploadList(Crawler(self.empty_restaurant).query(10))
+        #  self.upload_food_list(Crawler(self.empty_restaurant).query(10))
+        # It there is an empty restaurant, then add 
+        if self.empty_restaurant:
+            list_of_locations = []
+
+            for key in self.empty_restaurant:
+                list_of_locations.append(self.urls[key])
+
+            p = ThreadPool(len(list_of_locations))
+
+            #  print(list_of_locations)
+            print("Attempting to add empty restaurants to DB")
+            p.map(self.upload_restaurant_item, list_of_locations)
+            p.close()
+
+            #  self.upload_restaurant_list(self.empty_restaurant)
+
+            print("Attempting to add food through YelpApi")
+            self.upload_food_list(Crawler(self.empty_restaurant).query(10))
+        #  print(item)
+        #  self.upload_restaurant_list(self.empty_restaurant)
+        #  for restaurant in self.empty_restaurant:
+            #  print(restaurant)
+            #  sleep(3)
+        return
+
+    def upload_restaurant_item2(self, item):
+        print("TEST: " + item['restaurantId'])
 
     def mycallback(self, x):
         # Add only non-empty lists
-        for restaurant in x:
-            if restaurant:
-                self.information.extend(restaurant)
+        #  for restaurant in x:
+            #  if restaurant:
+                #  self.information.extend(restaurant)
+        print(x)
 
     def get_food_from_restaurant(self, location):
         restaurantId = location['restaurantId']
@@ -95,13 +129,86 @@ class DB(object):
                         name=item["name"], location=location)
                 food_list.append(single_food_item)
 
-            # if empty list, print the restaurantId
             if food_list:
                 self.information.extend(food_list)
             else:
-                self.empty_restaurant.append(dict(url=location))
+                # if empty list, print the restaurantId, add to dict
+                print(restaurantId)
+                self.empty_restaurant[restaurantId] = location
 
             return food_list
+
+    # Upload single item
+    def upload_food_item(self, item):
+        foodId = item["food_id"]
+        restaurantId = item['location']['restaurantId']
+        name = item['name']
+
+        try:
+            response = table.put_item(
+            Item={
+                'foodId' : foodId,
+                'restaurantId' : restaurantId,
+                'name' : name
+                },
+            ConditionExpression='attribute_not_exists(foodId)'
+            )
+            print("Success: {} {}".format(foodId, restaurantId))
+            json.dumps(response, indent=4, cls=DecimalEncoder)
+        except Exception as e:
+            print(e)
+            print("Fail: {}".format(foodId))
+
+    # Upload from yelpApi list (cap 20)
+    def upload_food_list(self, data):
+        for item in data:
+            self.upload_food_item(item)
+
+    # Upload single item
+    def upload_restaurant_item(self, item):
+        print("@@@@@@@@@@@" + item['restaurantId'])
+        #  getcontext().prec = 5
+
+        # Convert float -> string -> decimal
+        restaurantId    = item['restaurantId']
+        restaurant_name = item['restaurant_name']
+        address         = item['address']
+        categories      = item['category']
+        city            = item['city']
+        latitude        = Decimal(str(item['latitude']))
+        longitude       = Decimal(str(item['longitude']))
+        postal_code     = int(item['postal_code'])
+        state           = item['state']
+        try:
+            response = self.restaurant_table.put_item(
+            Item={
+                'restaurantId'      :   restaurantId,
+                'address'           :   address,
+                'categories'        :   categories,
+                'city'              :   city,
+                'latitude'          :   latitude,
+                'longitude'         :   longitude,
+                'postal_code'       :   postal_code,
+                'restaurant_name'   :   restaurant_name,
+                'state'             :   state
+                },
+            ConditionExpression='attribute_not_exists(restaurantId)'
+            )
+            print(u"Success: {}".format(restaurantId))
+            #  json.dumps(response, indent=4, cls=DecimalEncoder)
+        except ClientError as ce:
+            if ce.response['Error']['Code'] == "ConditionalCheckFailedException":
+                print(u"Fail (already exists): {}".format(restaurantId))
+        except Exception as e:
+            print(u"Fail: {}".format(restaurantId))
+            print(e)
+
+    # Upload from yelpApi list (cap 20)
+    def upload_restaurant_list(self, data):
+        for key,value in data.iteritems():
+            self.upload_restaurant_item(value)
+
+
 
 if __name__ == "__main__":
     DB().get_item()
