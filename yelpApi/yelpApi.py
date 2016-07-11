@@ -29,25 +29,25 @@ class Yelp_API(object):
                 self.client._make_request(SEARCH_PATH, self.data)
                 )
 
-        list_to_be_returned = []
         dict_of_urls = {}
         for bus in response.businesses:
             #  url = "http://www.yelp.com/biz_photos/"+bus.id+"?tab=food&start=0"
             category_list = []
-            for category in bus.categories:
-                category_list.append(category.name)
+            if bus.categories:
+                for category in bus.categories:
+                    category_list.append(category.name)
 
             dict_of_urls[bus.id]= dict(address=bus.location.address, 
-                    city=bus.location.city,
-                    state=bus.location.state_code,
-                    postal_code=bus.location.postal_code,
-                    display_address=bus.location.display_address,
-                    restaurant_name=bus.name,
-                    restaurantId = bus.id,
-                    latitude=bus.location.coordinate.latitude,
-                    longitude=bus.location.coordinate.longitude,
-                    category=category_list
-                    )
+                city=bus.location.city,
+                state=bus.location.state_code,
+                postal_code=bus.location.postal_code,
+                display_address=bus.location.display_address,
+                restaurant_name=bus.name,
+                restaurantId = bus.id,
+                latitude=bus.location.coordinate.latitude,
+                longitude=bus.location.coordinate.longitude,
+                category=category_list
+            )
 
         if 'query_method' in self.data and self.data['query_method'] == 1:
             print("DB")

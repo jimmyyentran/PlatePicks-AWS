@@ -1,4 +1,5 @@
 #  import requests
+import boto3
 from bs4 import BeautifulSoup
 from urlparse import urljoin
 from nameParser import NameParser
@@ -108,6 +109,28 @@ class Crawler(object):
                                     #  print(fake)
                                     pics.append(link['src'].replace("/258s", "/o"))
                                     pics_id.append(fake)
+
+        # if not pics_id:
+        #     food_db = boto3.Session(
+        #         aws_access_key_id='AKIAJLUAEUTHWQCBK5RQ',
+        #         aws_secret_access_key='zvabDmc9cnmvVt4r6Yvaa5CCQSiom2iyuuaBn7Gu'
+        #     )
+        #     dynamodb = food_db.resource('dynamodb', region_name='us-east-1')
+        #     table = dynamodb.Table('foodtinder-mobilehub-761050320-food')
+        #     restaurant_table = dynamodb.Table('foodtinder-mobilehub-761050320-restaurant')
+        #     try:
+        #         response = table.put_item(
+        #             Item={
+        #                 'foodId': foodId,
+        #                 'restaurantId': restaurantId,
+        #                 'name': name
+        #             },
+        #             ConditionExpression='attribute_not_exists(foodId)'
+        #         )
+        #         print("Success: {} {}".format(foodId, restaurantId))
+        #     except Exception as e:
+        #         print(e)
+        #         print("Fail: {}".format(foodId))
 
         # prints the comments, pic_id and the url of the picture
         for pic, coms, pic_id in zip(pics, com, pics_id):
