@@ -33,7 +33,7 @@ class Crawler(object):
                 #  print(url)
                 #  print(url.encode('utf-8'))
             self.url_to_id_lookup[url] = key #add url as key
-            action_item = grequests.get(url, hooks = {'response' :
+            action_item = grequests.get(url, allow_redirects=False, hooks = {'response' :
                     self.extract_food_names
             })
             async_list.append(action_item)
@@ -42,7 +42,7 @@ class Crawler(object):
 
     # allow grequests to output errors
     def exception_handler(self, request, exception):
-        print "Failed Food: %s" % (request)
+        print "Failed Crawl Food: %s" % (request)
         print(exception)
 
     def query_dynamodb(self, response, **kwargs):
@@ -53,7 +53,7 @@ class Crawler(object):
 
     #  @profile
     def extract_food_names(self, response, **kwargs):
-        #  print(vars(response))
+        # print(vars(response))
         url = response.url
         firstUrl = url
         html = response.content
@@ -131,6 +131,8 @@ class Crawler(object):
         #     except Exception as e:
         #         print(e)
         #         print("Fail: {}".format(foodId))
+        if not pics:
+            print("{} has no food".format(firstUrl))
 
         # prints the comments, pic_id and the url of the picture
         for pic, coms, pic_id in zip(pics, com, pics_id):

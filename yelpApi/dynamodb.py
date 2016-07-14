@@ -10,6 +10,7 @@ from boto3.dynamodb.conditions import Key
 from multiprocessing.pool import ThreadPool
 from threading import Thread
 from crawl import Crawler
+import threading
 from random import shuffle
 
 
@@ -25,60 +26,67 @@ class DecimalEncoder(json.JSONEncoder):
 
 
 class DB(object):
-    def __init__(self, data):
+    def __init__(self, data=None):
         # Global so these can be used anywhere
         global table
-        food_db = boto3.Session(
+        self.boto3sess = boto3.Session(
             aws_access_key_id='AKIAJLUAEUTHWQCBK5RQ',
             aws_secret_access_key='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'
         )
 
         # Hardcoded in key parameters
-        dynamodb = food_db.resource('dynamodb', region_name='us-east-1')
+        dynamodb = self.boto3sess.resource('dynamodb', region_name='us-east-1')
         table = dynamodb.Table('foodtinder-mobilehub-761050320-food')
         self.restaurant_table = dynamodb.Table('foodtinder-mobilehub-761050320-restaurant')
 
         self.urls = data;
         self.information = []
         self.empty_restaurant = {}
+        self.uninserted_restaurant = {}
 
     def query(self, limit=1):
         self.limit = limit
-        list_of_locations = []
-        #  p = ThreadPool(20) #ThreadPool requires number input
         p = ThreadPool()  # ThreadPool requires number input
-        # for key in self.urls:
-        #     list_of_locations.append(self.urls[key])
-
-        # result = p.map_async(get_food_from_restaurant, list_of_locations, callback=self.mycallback)
-        # Do shuffling
-        # shuffle(list_of_locations)
-        # try:
-        #     p.map(self.get_food_from_restaurant, list_of_locations);
-        #     # map(self.get_food_from_restaurant, list_of_locations);
-        # except Exception as e:
-        #     print(e)
-
         for key, value in self.urls.iteritems():
             p.apply_async(self.get_food_from_restaurant, [value])
 
         p.close()
         p.join()
 
-        thread = Thread(target=self.fill_empty_restaurant, args=[self.empty_restaurant])
-        thread.start()
+        # thread = Thread(target=self.fill_empty_restaurant, args=[self.empty_restaurant])
+        # thread.start()
+
+        # If empty_restaurant has items, trigger SNS to trigger another Lambda
+        if self.empty_restaurant:
+            client = boto3.client('sns', region_name='us-east-1')
+            TopicArn = "arn:aws:sns:us-east-1:681018402115:TriggerToUploadDynamoDB"
+            message = json.dumps({'default': json.dumps(self.empty_restaurant)})
+            response = client.publish(
+                TopicArn=TopicArn,
+                # TargetArn=TargetArm,
+                Message=message,
+                MessageStructure='json'
+            )
+            print(response)
+
 
         return self.information
 
     def fill_empty_restaurant(self, item):
-        # It there is an empty restaurant, then add
-        if self.empty_restaurant:
+        # It there is a a dict, then add
+        if item:
             print("Attempting to add empty restaurants to DB")
-            p = ThreadPool()
+            p = ThreadPool(20)
 
             try:
-                for key, value in self.empty_restaurant.iteritems():
+                # for key, value in self.empty_restaurant.iteritems():
+                for key, value in item.iteritems():
                     p.apply_async(self.upload_restaurant_item, [value])
+            except AttributeError as ae:
+                # remove key if the restaurant already exists
+                print(ae.args[0])
+                item.pop(ae.args[0], None)
+                print(item)
             except Exception as e:
                 # Sometimes this will throw, but it will execute anyways
                 print(e)
@@ -89,10 +97,11 @@ class DB(object):
             # self.upload_restaurant_list(self.empty_restaurant)
 
             print("Attempting to add food through YelpApi")
-            self.upload_food_list(Crawler(self.empty_restaurant).query(10))
-
-
-        return
+            # p.apply_async(self.upload_food_list(Crawler(self.uninserted_restaurant).query(10)))
+            t = threading.Thread(name="Crawler", target=self.upload_food_list(Crawler(self.uninserted_restaurant).query(10)))
+            t.start()
+            t.join()
+            # self.upload_food_list(Crawler(self.uninserted_restaurant).query(10))
 
     def mycallback(self, x):
         # Add only non-empty lists
@@ -143,8 +152,10 @@ class DB(object):
 
                 # Do a check to see if the restaurant exists, if it does we know that the restaurant doesn't have
                 # any pictures, so continue
-                if not self.check_if_restaurant_exists(restaurantId):
-                    self.empty_restaurant[restaurantId] = location
+                # if not self.check_if_restaurant_exists(restaurantId):
+                #     self.empty_restaurant[restaurantId] = location
+
+                self.empty_restaurant[restaurantId] = location
 
             return food_list
 
@@ -167,7 +178,9 @@ class DB(object):
             json.dumps(response, indent=4, cls=DecimalEncoder)
         except Exception as e:
             print(e)
-            print("Food Insert Fail: {}".format(foodId))
+            print("Food Insert Fail: {}, Ex: {}".format(foodId, e.message))
+
+        return
 
     # Upload from yelpApi list (cap 20)
     def upload_food_list(self, data):
@@ -177,17 +190,21 @@ class DB(object):
     # Upload single item
     def upload_restaurant_item(self, item):
 
-        # Convert float -> string -> decimal
-        restaurantId = item['restaurantId']
-        restaurant_name = item['restaurant_name']
-        address = item['address']
-        categories = item['category']
-        city = item['city']
-        latitude = Decimal(str(item['latitude']))
-        longitude = Decimal(str(item['longitude']))
-        postal_code = int(item['postal_code'])
-        state = item['state']
         try:
+            # Convert float -> string -> decimal
+            restaurantId = item['restaurantId']
+            restaurant_name = item['restaurant_name']
+            address = item['address']
+            categories = item['category']
+            city = item['city']
+            latitude = Decimal(str(item['latitude']))
+            longitude = Decimal(str(item['longitude']))
+            try:
+                postal_code = int(item['postal_code'])
+            except Exception as e:
+                postal_code = item['postal_code']
+                print("Use literal: " + e.message)
+            state = item['state']
             response = self.restaurant_table.put_item(
                 Item={
                     'restaurantId': restaurantId,
@@ -206,10 +223,13 @@ class DB(object):
             #  json.dumps(response, indent=4, cls=DecimalEncoder)
         except ClientError as ce:
             if ce.response['Error']['Code'] == "ConditionalCheckFailedException":
-                print(u"Fail (already exists): {}".format(restaurantId))
+                print(u"Fail Restaurant(already exists): {}".format(restaurantId))
+                return
         except Exception as e:
-            print(u"Add restaurant Fail: {}".format(restaurantId))
-            print(e)
+            print("Exception: " + e.message + " " + restaurantId)
+            return
+
+        self.uninserted_restaurant[restaurantId] = item
 
     # Upload from yelpApi list (cap 20)
     def upload_restaurant_list(self, data):

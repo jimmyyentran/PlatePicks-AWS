@@ -28,14 +28,20 @@ params2 = {
         }
 
 start = time.time()
-response = Yelp_API(params).call_API()
+try:
+    response = Yelp_API(params).call_API()
+    pprint.pprint(response)
+except Exception as e:
+    print e
 end = time.time()
-pprint.pprint(response)
 
 start2 = time.time()
-response = Yelp_API(params2).call_API()
+try:
+    response = Yelp_API(params2).call_API()
+    pprint.pprint(response)
+except Exception as e:
+    print e
 end2 = time.time()
-pprint.pprint(response)
 
 print("Query database:")
 print (end - start)

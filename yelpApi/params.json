@@ -1,0 +1,341 @@
+{
+  "back-door-cafe-carlisle": {
+    "category": [
+      "Cafes"
+    ],
+    "city": "Carlisle",
+    "restaurantId": "back-door-cafe-carlisle",
+    "display_address": [
+      "156 W High St",
+      "Carlisle, PA 17013"
+    ],
+    "longitude": -77.1931610107422,
+    "state": "PA",
+    "postal_code": "17013",
+    "restaurant_name": "Back Door Cafe",
+    "address": [
+      "156 W High St"
+    ],
+    "latitude": 40.2015800476074
+  },
+  "north-hanover-grille-carlisle": {
+    "category": [
+      "Chicken Wings",
+      "American (Traditional)"
+    ],
+    "city": "Carlisle",
+    "restaurantId": "north-hanover-grille-carlisle",
+    "display_address": [
+      "37 N Hanover St",
+      "Carlisle, PA 17013"
+    ],
+    "longitude": -77.1883850097656,
+    "state": "PA",
+    "postal_code": "17013",
+    "restaurant_name": "North Hanover Grille",
+    "address": [
+      "37 N Hanover St"
+    ],
+    "latitude": 40.2028770446777
+  },
+  "the-gingerbread-man-carlisle": {
+    "category": [
+      "American (Traditional)"
+    ],
+    "city": "Carlisle",
+    "restaurantId": "the-gingerbread-man-carlisle",
+    "display_address": [
+      "5 S Court House Ave",
+      "Carlisle, PA 17013"
+    ],
+    "longitude": -77.1893814,
+    "state": "PA",
+    "postal_code": "17013",
+    "restaurant_name": "The Gingerbread Man",
+    "address": [
+      "5 S Court House Ave"
+    ],
+    "latitude": 40.2010264
+  },
+  "chens-asian-restaurant-carlisle": {
+    "category": [
+      "Chinese",
+      "Sushi Bars"
+    ],
+    "city": "Carlisle",
+    "restaurantId": "chens-asian-restaurant-carlisle",
+    "display_address": [
+      "310 N Hanover St",
+      "Carlisle, PA 17013"
+    ],
+    "longitude": -77.1886063,
+    "state": "PA",
+    "postal_code": "17013",
+    "restaurant_name": "Chen's Asian Restaurant",
+    "address": [
+      "310 N Hanover St"
+    ],
+    "latitude": 40.2060699
+  },
+  "1794-the-whiskey-rebellion-carlisle": {
+    "category": [
+      "American (Traditional)",
+      "American (New)"
+    ],
+    "city": "Carlisle",
+    "restaurantId": "1794-the-whiskey-rebellion-carlisle",
+    "display_address": [
+      "10 S Hanover St",
+      "Carlisle, PA 17013"
+    ],
+    "longitude": -77.189765,
+    "state": "PA",
+    "postal_code": "17013",
+    "restaurant_name": "1794 The Whiskey Rebellion",
+    "address": [
+      "10 S Hanover St"
+    ],
+    "latitude": 40.200561
+  },
+  "market-cross-pub-and-brewery-carlisle": {
+    "category": [
+      "American (Traditional)",
+      "Breweries",
+      "Pubs"
+    ],
+    "city": "Carlisle",
+    "restaurantId": "market-cross-pub-and-brewery-carlisle",
+    "display_address": [
+      "113 N Hanover St",
+      "Carlisle, PA 17013"
+    ],
+    "longitude": -77.1887236833572,
+    "state": "PA",
+    "postal_code": "17013",
+    "restaurant_name": "Market Cross Pub & Brewery",
+    "address": [
+      "113 N Hanover St"
+    ],
+    "latitude": 40.2033754284141
+  },
+  "johns-hideaway-restaurant-carlisle": {
+    "category": [
+      "American (Traditional)"
+    ],
+    "city": "Carlisle",
+    "restaurantId": "johns-hideaway-restaurant-carlisle",
+    "display_address": [
+      "302 N College St",
+      "Carlisle, PA 17013"
+    ],
+    "longitude": -77.1961441040039,
+    "state": "PA",
+    "postal_code": "17013",
+    "restaurant_name": "John's Hideaway Restaurant",
+    "address": [
+      "302 N College St"
+    ],
+    "latitude": 40.2060813903809
+  },
+  "carlisle-thai-cuisine-carlisle": {
+    "category": [
+      "Thai",
+      "Gluten-Free",
+      "Vegetarian"
+    ],
+    "city": "Carlisle",
+    "restaurantId": "carlisle-thai-cuisine-carlisle",
+    "display_address": [
+      "141 W High St",
+      "Carlisle, PA 17013"
+    ],
+    "longitude": -77.1927,
+    "state": "PA",
+    "postal_code": "17013",
+    "restaurant_name": "Carlisle Thai Cuisine",
+    "address": [
+      "141 W High St"
+    ],
+    "latitude": 40.202194
+  },
+  "cafe-bruges-carlisle": {
+    "category": [
+      "Belgian"
+    ],
+    "city": "Carlisle",
+    "restaurantId": "cafe-bruges-carlisle",
+    "display_address": [
+      "16 N Pitt St",
+      "Carlisle, PA 17013"
+    ],
+    "longitude": -77.1914957463741,
+    "state": "PA",
+    "postal_code": "17013",
+    "restaurant_name": "Cafe Bruges",
+    "address": [
+      "16 N Pitt St"
+    ],
+    "latitude": 40.2022334933281
+  },
+  "helenas-chocolate-cafe-and-creperie-carlisle": {
+    "category": [
+      "Creperies",
+      "Coffee & Tea",
+      "Cafes"
+    ],
+    "city": "Carlisle",
+    "restaurantId": "helenas-chocolate-cafe-and-creperie-carlisle",
+    "display_address": [
+      "36 W High St",
+      "Carlisle, PA 17013"
+    ],
+    "longitude": -77.1909255981445,
+    "state": "PA",
+    "postal_code": "17013",
+    "restaurant_name": "Helena's Chocolate Cafe & Creperie",
+    "address": [
+      "36 W High St"
+    ],
+    "latitude": 40.2011833190918
+  },
+  "georges-subs-and-pizza-carlisle": {
+    "category": [
+      "Pizza"
+    ],
+    "city": "Carlisle",
+    "restaurantId": "georges-subs-and-pizza-carlisle",
+    "display_address": [
+      "121 W High St",
+      "Carlisle, PA 17013"
+    ],
+    "longitude": -77.1921157836914,
+    "state": "PA",
+    "postal_code": "17013",
+    "restaurant_name": "George's Subs & Pizza",
+    "address": [
+      "121 W High St"
+    ],
+    "latitude": 40.2021484375
+  },
+  "hamilton-restaurant-carlisle": {
+    "category": [
+      "Hot Dogs",
+      "American (Traditional)"
+    ],
+    "city": "Carlisle",
+    "restaurantId": "hamilton-restaurant-carlisle",
+    "display_address": [
+      "55 W High St",
+      "Carlisle, PA 17013"
+    ],
+    "longitude": -77.191314,
+    "state": "PA",
+    "postal_code": "17013",
+    "restaurant_name": "Hamilton Restaurant",
+    "address": [
+      "55 W High St"
+    ],
+    "latitude": 40.201843
+  },
+  "spoons-cafe-carlisle": {
+    "category": [
+      "Salad",
+      "Soup",
+      "Sandwiches"
+    ],
+    "city": "Carlisle",
+    "restaurantId": "spoons-cafe-carlisle",
+    "display_address": [
+      "57 W Pomfret St",
+      "Carlisle, PA 17013"
+    ],
+    "longitude": -77.1909866333008,
+    "state": "PA",
+    "postal_code": "17013",
+    "restaurant_name": "Spoons Cafe",
+    "address": [
+      "57 W Pomfret St"
+    ],
+    "latitude": 40.2002868652344
+  },
+  "issei-noodle-carlisle": {
+    "category": [
+      "Asian Fusion",
+      "Ramen"
+    ],
+    "city": "Carlisle",
+    "restaurantId": "issei-noodle-carlisle",
+    "display_address": [
+      "54 W High St",
+      "Carlisle, PA 17013"
+    ],
+    "longitude": -77.1907393634319,
+    "state": "PA",
+    "postal_code": "17013",
+    "restaurant_name": "Issei Noodle",
+    "address": [
+      "54 W High St"
+    ],
+    "latitude": 40.2015729993582
+  },
+  "piatto-carlisle": {
+    "category": [
+      "Italian"
+    ],
+    "city": "Carlisle",
+    "restaurantId": "piatto-carlisle",
+    "display_address": [
+      "22 W Pomfret St",
+      "Carlisle, PA 17013"
+    ],
+    "longitude": -77.190055847168,
+    "state": "PA",
+    "postal_code": "17013",
+    "restaurant_name": "Piatto",
+    "address": [
+      "22 W Pomfret St"
+    ],
+    "latitude": 40.1998252868652
+  },
+  "mt-fuji-carlisle": {
+    "category": [
+      "Japanese",
+      "Sushi Bars"
+    ],
+    "city": "Carlisle",
+    "restaurantId": "mt-fuji-carlisle",
+    "display_address": [
+      "149 N Hanover St",
+      "Carlisle, PA 17013"
+    ],
+    "longitude": -77.18839,
+    "state": "PA",
+    "postal_code": "17013",
+    "restaurant_name": "Mt Fuji",
+    "address": [
+      "149 N Hanover St"
+    ],
+    "latitude": 40.20424
+  },
+  "andalusia-carlisle": {
+    "category": [
+      "Spanish",
+      "Tapas Bars",
+      "Moroccan"
+    ],
+    "city": "Carlisle",
+    "restaurantId": "andalusia-carlisle",
+    "display_address": [
+      "26 N Hanover St",
+      "Carlisle, PA 17013"
+    ],
+    "longitude": -77.1894608,
+    "state": "PA",
+    "postal_code": "17013",
+    "restaurant_name": "Andalusia",
+    "address": [
+      "26 N Hanover St"
+    ],
+    "latitude": 40.2027092
+  }
+}

@@ -14,15 +14,27 @@ params =  {
        #  "offset": 0,
        #  "query_method": 1
         #  }
+  #
+  # "term": "",
+  # "food_per_business": 1,
+  # "ll": "40.8033, -73.2945",
+  # "limit": 20,
+  # "radius_filter": 10000,
+  # "category_filter": "",
+  # "sort": 1,
+  # "query_method": 1
 
   "term": "",
   "food_per_business": 1,
-  "ll": "40.3033, -75.2945",
+  "ll": "33.9533, -120.3962",
   "limit": 20,
   "radius_filter": 10000,
   "category_filter": "",
   "sort": 1,
   "query_method": 1
+
 }
+
+
 response = Yelp_API(params).call_API()
 pprint.pprint(response)

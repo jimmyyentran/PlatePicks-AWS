@@ -49,6 +49,11 @@ class Yelp_API(object):
                 category=category_list
             )
 
+        print(vars(response))
+        if response.total == 0:
+            raise RuntimeError("Yelp returns no businesses")
+
+
         if 'query_method' in self.data and self.data['query_method'] == 1:
             print("DB")
             food_list = DB(dict_of_urls).query(self.food_per_business)
